@@ -1442,10 +1442,11 @@ mapping is visible.
 
 **Phase 0 status (8 Oct 2026):** Z1–Z4 are built in Mole-V3 on
 `claude/stoic-bohr-mosevc` (commit `9cd7366`), each with a test that failed
-first. All the gates pass: 835 unit tests, 498 database checks and 114
-end-to-end journeys. They also apply to the audit branch, with three small
-conflicts. They go live with Mole-V3's YOUR_TURN B26: migration 138, then five
-functions redeployed in order. Z5 is done for the three embedders; `ai_proxy`
+first, and on the release branch `claude/app-audit-production-readiness-76b7dv`
+(commit `c25a5b1`), where every gate passes: 988 unit tests, 545 database
+checks and 148 end-to-end journeys. Migration 138 is applied in production
+(8 Oct). The rest goes live with that branch's YOUR_TURN B27: five functions
+redeployed in order, then the embedding backfill. Z5 is done for the three embedders; `ai_proxy`
 and `generate_signals` move the key into a header in phase 1.
 
 ---
