@@ -734,7 +734,7 @@ tokens, Flash-Lite $0.075 / $0.30, embeddings $0.02):
 | Search **v2**: query embedding plus a re-rank of 30 | 20 to embed + 2,100 in + 100 out, Flash-Lite | **$0.0002**, and nothing when the database or embedding answer is enough |
 | Meeting agenda | 300 in + 70 out, Flash | $0.0001 |
 | Ask Mole chat | 3,000 in (the FAQs) + 150 out, Flash-Lite | $0.0003 |
-| Embedding a contact | 200 | $0.000004 |
+| Embedding a contact | 200, at `gemini-embedding-001`'s $0.15 per million | $0.00003 |
 | **Company news with web search** | 150 in + 150 out, **plus the search fee** | **About $0.014 per search** on current Gemini models, after 5,000 free searches a month. One prompt can run several searches |
 
 **Tokens are cheap.** On `docs/CAPACITY_AND_COST.md`'s assumptions (8 scans
@@ -1440,8 +1440,13 @@ mapping is visible.
 | | P1 "Remember this", then P2 brief, then P3 drafts, then P4 reflection, each opt-in | Per feature, as it's built |
 | **6 · Scale** | Queue (pgmq) for background AI, batch APIs, on-device first pass for OCR (decided when the time comes) | Load test from `docs/CAPACITY_AND_COST.md` |
 
-Phase 0 is small and urgent. Z1 and Z2 together mean most Ask Mole searches
-currently send whole contact books, so they should go first.
+**Phase 0 status (8 Oct 2026):** Z1–Z4 are built in Mole-V3 on
+`claude/stoic-bohr-mosevc` (commit `9cd7366`), each with a test that failed
+first. All the gates pass: 835 unit tests, 498 database checks and 114
+end-to-end journeys. They also apply to the audit branch, with three small
+conflicts. They go live with Mole-V3's YOUR_TURN B26: migration 138, then five
+functions redeployed in order. Z5 is done for the three embedders; `ai_proxy`
+and `generate_signals` move the key into a header in phase 1.
 
 ---
 
