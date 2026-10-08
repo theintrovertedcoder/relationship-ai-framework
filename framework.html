@@ -275,7 +275,7 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--rule-f
 
 <div class="wrap">
 <header class="mast">
-  <div class="row"><span class="eyebrow">Mole · relationship-ai-framework</span><span class="pill purple">Proposed · v2</span><span class="pill">46 decisions to agree</span><span class="pill">8 Oct 2026</span></div>
+  <div class="row"><span class="eyebrow">Mole · relationship-ai-framework</span><span class="pill ok">Agreed · v2</span><span class="pill">46 decisions agreed 8 Oct</span><span class="pill">8 Oct 2026</span></div>
   <h1 class="statement">How Mole uses AI to remember people</h1>
   <p class="lead">One set of rules for every AI feature in Mole: what may reach Gemini or Claude, how it's trimmed and given stand-in labels before it goes, where it's kept, how Mole learns without training on anyone's data, and how fast and how accurate each feature has to be.</p>
   <p class="meta">The written framework is <a href="https://github.com/theintrovertedcoder/relationship-ai-framework/blob/claude/stoic-bohr-mosevc/AI_FRAMEWORK.md">AI_FRAMEWORK.md</a>. This page draws it. Every sample on this page uses made-up people and companies.</p>
@@ -783,7 +783,7 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--rule-f
   <div class="intro">
     <span class="eyebrow">§12</span>
     <h2 class="title">46 decisions, each with a default</h2>
-    <p>"Agree with every default" is a valid answer, and so is changing any one by number.</p>
+    <p>Agreed on 8 Oct 2026: every default, as written. A later change is made by number.</p>
   </div>
   <details class="dec" open>
     <summary>Show all 46</summary>
@@ -798,8 +798,8 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--rule-f
     <h2 class="title">Making it solid, accurate and fast</h2>
   </div>
   <ol class="next">
-    <li><span><b>Agree the 46 decisions.</b> One reply settles the framework. Anything changed by number gets updated here and in the doc.</span><span class="pill purple who">Haziq</span></li>
-    <li><span><b>Phase 0 in Mole-V3.</b> Fix Z1 to Z4, each with a test that fails first. This stops whole contact books going to Google.</span><span class="pill who">Claude</span></li>
+    <li><span><s>Agree the 46 decisions.</s> <b>Done 8 Oct.</b></span><span class="pill ok who">Done</span></li>
+    <li><span><b>Phase 0 in Mole-V3: built.</b> Z1 to Z4 are fixed, each with a test that failed first. They go live with YOUR_TURN B26: migration 138, then five functions redeployed.</span><span class="pill purple who">Haziq, B26</span></li>
     <li><span><b>Turn the rules into code that checks itself.</b> Feature manifests, the class check, the scrubber and the output guard, with the injection set as tests. That's what makes the framework solid rather than a document.</span><span class="pill who">Claude</span></li>
     <li><span><b>Measure accuracy.</b> Photograph 30 real cards (B6) so card scanning gets its first real score. Then build sets for search, agenda and news.</span><span class="pill purple who">Haziq, then Claude</span></li>
     <li><span><b>Measure speed.</b> Add timings to every call, show p95 against the budgets on AI Control, then collapse the gateway's round trips into one query.</span><span class="pill who">Claude</span></li>
@@ -808,7 +808,7 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--rule-f
 </section>
 
 <footer>
-  <span>Mole AI Framework · drawn from AI_FRAMEWORK.md v2, 8 Oct 2026 · status: proposed.</span>
+  <span>Mole AI Framework · drawn from AI_FRAMEWORK.md v2, 8 Oct 2026 · status: agreed; phase 0 built.</span>
   <span>Samples use made-up people, companies and numbers. Token counts and costs in the samples are estimates at the rates in <code>ai_proxy</code>.</span>
 </footer>
 </div>
@@ -1049,7 +1049,7 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--rule-f
   /* ───── Cost chart (§6.4), per 1,000 calls, one scale ───── */
   var CMAX = 15;
   var COST = [
-    ["Embedding a contact", 0.004, "green"], ["Meeting agenda", 0.10, "green"], ["Search, v2", 0.19, "green"], ["Ask Mole chat", 0.30, "green"],
+    ["Embedding a contact", 0.03, "green"], ["Meeting agenda", 0.10, "green"], ["Search, v2", 0.19, "green"], ["Ask Mole chat", 0.30, "green"],
     ["Card scan", 0.38, "green"], ["Search, today (whole book)", 7.30, "red"], ["Company news, web-searched", 14.10, "amber"]
   ];
   var cc = document.getElementById("costchart"), co = "";
