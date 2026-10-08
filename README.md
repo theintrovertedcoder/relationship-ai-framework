@@ -8,7 +8,8 @@ safety and monitoring.
 
 | File | What it is |
 |---|---|
-| [AI_FRAMEWORK.md](AI_FRAMEWORK.md) | **The framework.** Status: proposed. Decisions AI-1 to AI-30 in §12 are waiting to be agreed |
+| [AI_FRAMEWORK.md](AI_FRAMEWORK.md) | **The framework.** Status: proposed. Decisions AI-1 to AI-31 in §12 are waiting to be agreed |
+| [framework.html](framework.html) | The framework drawn out: topology, layers, data classes, memory, speed and quality bars, and four features followed step by step with sample output. Open it in a browser. Live copy: https://claude.ai/artifact/BvkPAyauyybpBccvQSykLy |
 | [AI_FRAMEWORK_BRIEF.md](AI_FRAMEWORK_BRIEF.md) | The brief it answers: how AI worked in Mole on 5 Oct 2026, and the questions the framework had to settle |
 
 The code it governs is in [mole-networking/Mole-V3](https://github.com/mole-networking/Mole-V3).

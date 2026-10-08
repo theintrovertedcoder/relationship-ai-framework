@@ -921,6 +921,42 @@ Alerts go to Haziq by email (Resend) and to Sentry:
 | Unembedded records stay above 0 for more than 1 hour | Recall is degrading |
 | Eval run fails on a published prompt (scheduled weekly re-run) | The model changed under us |
 
+### 11.4 Speed budgets
+
+"Fast" is a number for each feature, measured at p95 for a person in Malaysia
+or Singapore, and shown on AI Control next to the error rate. A feature that
+misses its budget for a week is a task, the same as a failing eval.
+
+| Feature | Budget (p95) | How it stays inside it |
+|---|---|---|
+| Gateway overhead (sign-in, policy, context, guard; everything but the model) | **≤ 150 ms** | One policy query, cached config (below) |
+| F1 card scan, photo to draft | **≤ 4.0 s** | The phone shrinks the photo to at most 1600 px before sending; `vision-extract` with reasoning off and a schema |
+| F2 search, name matches | **≤ 300 ms** | Database only, shown at once |
+| F2 search, matches by meaning | **≤ 1.0 s** | Query embedding cached per person for 24 hours; pgvector index |
+| F2 search, re-ranked | **≤ 2.5 s** | Only when needed; `text-fast`; 30 records at most. The first results are already on screen |
+| F3 chat, first words | **≤ 1.5 s** (whole answer ≤ 4 s) | Streamed; `text-fast` |
+| F7 agenda | **≤ 3.0 s** | Streamed; 3 bullets; reasoning off |
+| Background (signals, embeddings, digests) | No time budget. Throughput: **10k people's signals within 1 hour** | Queue and batches (§6.2), batch APIs at 100k |
+
+Where the time goes today: before `ai_proxy` calls the model, it makes **4 to 7
+database and auth round trips, one after another**: who is asking, the paywall
+flag, entitlements, feature config, the quota check, today's call count, and the
+person's profile. Each is a separate wait. In the target:
+
+- **One policy query.** The gateway makes one call, `ai_policy_check(user,
+  feature)`, which returns switches, consent, plan, allowance, limits and budget
+  together.
+- **Config cached per isolate for 60 seconds.** Feature manifests, prompt
+  versions and the model registry are cached the way the provider key already
+  is.
+- **Reads in parallel.** Context reads that don't depend on each other start
+  together.
+- **Model calls in-region.** Calls go to `asia-southeast1` (AI-9), so they
+  don't leave the region.
+- **Time limits.** 8 s for interactive calls. The one retry is made only if the
+  budget still has room. Otherwise the person gets the non-AI path at once,
+  without waiting longer.
+
 ---
 
 ## 12 · Decisions
@@ -960,6 +996,7 @@ changing any one of them by number.
 | **AI-28** | Weekly 15-minute AI review in the den, by Haziq | Agree |
 | **AI-29** | The framework covers every Mole product. Bingo and the marketing sites use the same gateway when they get AI. Bingo guests are treated like Loop attendees. Marketing sites use P0 only (§3.5) | Agree |
 | **AI-30** | Each feature's voice register as in §8.1, fixed in the system part of the prompt and checked in every eval. Ask Mole chat in the app moves to product voice | Agree |
+| **AI-31** | Speed budgets per feature as in §11.4, shown on AI Control. One policy query and cached config in the gateway | Agree |
 
 ---
 
@@ -979,7 +1016,8 @@ mapping is visible.
 | | Z4: dedupe key per user (`news:<user>:<company>:<day>`), data fix for the unique index | db test: two users, one company, both get the signal |
 | | Z5: provider key in a header, not the URL | `no provider key in a URL` |
 | | Lane B through `ai_call_log`, model from config | `every model call is logged` |
-| **1 · One door** | Model adapter and job registry (`ai_models`, `ai_features`) inside the gateway. `provider` column used | `features without a manifest are refused` |
+| **1 · One door** | One policy query (`ai_policy_check`) and config cache, inside the speed budgets (§11.4) | `gateway overhead stays under 150 ms` (timed test with the database suite) |
+| | Model adapter and job registry (`ai_models`, `ai_features`) inside the gateway. `provider` column used | `features without a manifest are refused` |
 | | `embed_*`, `match_contacts`, `generate_signals` call the gateway (AI-12) | `only the gateway calls a provider host` (source scan) |
 | | Pin every model (AI-10), once F1/F2/F3 evals exist for the pinned versions | `no -latest alias in config` |
 | **2 · Send less** | Context fetched by the server for search (AI-5), shortlist and re-rank with labels (AI-6, AI-7) | `client never sends contact records to the gateway` |
@@ -1056,6 +1094,7 @@ currently send whole contact books, so they should go first.
 | J · Loop | §3.4, P5, AI-18 |
 | K · topology, architecture, infrastructure, path | §5, §6, §13 |
 | L · watching it run | §11 |
+| Speed ("fast") | §11.4, AI-31 |
 | Mole Bingo and the marketing sites (§1 of the brief) | §3.5, AI-29 |
 | Voice register for each feature, and how it's tested | §8.1, AI-30 |
 
