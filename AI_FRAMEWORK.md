@@ -10,10 +10,9 @@ how Mole "learns", which layer does what, and where each layer runs.*
 own copy. File paths in backticks (`supabase/functions/ai_proxy/index.ts` and
 the like) are paths in Mole-V3.*
 
-*Status: **proposed, v2**. Every decision in §12 has a default so the whole
-document can be agreed in one go, the way D19–D33 were. Nothing in the code
-changes until it is agreed. After that, each gap in §13 becomes a task with a
-test that fails until the task is done.*
+*Status: **agreed, 8 Oct 2026.** Haziq agreed with every default in §12
+(AI-1 to AI-46). Each gap in §13 becomes a task with a test that fails until
+the task is done. Phase 0 (Z1–Z4) started the same day.*
 
 **How to read this.** §1 is the ten-line version. §2–§4 are the rules (data,
 consent, providers). §5 is the target architecture and topology, and §6 is
@@ -1343,8 +1342,8 @@ person's profile. Each is a separate wait. In the target:
 
 ## 12 · Decisions
 
-Each has a default. **"Agree with every default"** is a valid answer, and so is
-changing any one of them by number.
+**Agreed 8 Oct 2026: every default, as written.** A later change to any one is
+made by number, and recorded here with its date.
 
 | # | Decision | Default |
 |---|---|---|
@@ -1480,7 +1479,7 @@ currently send whole contact books, so they should go first.
 
 ### For Haziq
 
-- **H1 · Agree the decisions** in §12: all defaults, or change by number.
+- ~~**H1 · Agree the decisions** in §12~~ Done 8 Oct: every default.
 - **H2 · Confirm the Gemini billing tier** (LEGAL 2) in Google's console. **No
   unpaid key may ever be set in the den.** Link: the AI Studio API keys page,
   https://aistudio.google.com/app/apikey, which shows each key's plan.

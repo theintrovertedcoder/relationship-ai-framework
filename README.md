@@ -8,7 +8,7 @@ safety and monitoring.
 
 | File | What it is |
 |---|---|
-| [AI_FRAMEWORK.md](AI_FRAMEWORK.md) | **The framework.** Status: proposed, v2 (8 Oct). Decisions AI-1 to AI-46 in §12 are waiting to be agreed. What changed in v2 is listed at the top |
+| [AI_FRAMEWORK.md](AI_FRAMEWORK.md) | **The framework.** Status: **agreed**, v2 (8 Oct). All decisions AI-1 to AI-46 in §12 agreed on 8 Oct. What changed in v2 is listed at the top |
 | [framework.html](framework.html) | The framework drawn out: topology, layers, data classes, memory, speed and quality bars, and four features followed step by step with sample output. Open it in a browser. Live copy: https://claude.ai/artifact/BvkPAyauyybpBccvQSykLy |
 | [AI_FRAMEWORK_BRIEF.md](AI_FRAMEWORK_BRIEF.md) | The brief it answers: how AI worked in Mole on 5 Oct 2026, and the questions the framework had to settle |
 
