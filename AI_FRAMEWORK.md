@@ -1446,7 +1446,24 @@ first, and on the release branch `claude/app-audit-production-readiness-76b7dv`
 (commit `c25a5b1`), where every gate passes: 988 unit tests, 545 database
 checks and 148 end-to-end journeys. Migration 138 is applied in production
 (8 Oct). The rest goes live with that branch's YOUR_TURN B27: five functions
-redeployed in order, then the embedding backfill. Z5 is done for the three embedders; `ai_proxy`
+redeployed in order, then the embedding backfill.
+
+**Progress since (8–9 Oct, release branch):**
+- **Phase 0 is finished.** Z5 covers every function. AI-46 news rationing:
+  weekly searches, 3 or more followers or a Pro Refresh, a monthly budget in AI
+  Control, every search logged with its cost, and the source checked against
+  the search results. Migration 139.
+- **Phase 1, built so far:**
+  - region pin (AI-35)
+  - disclosure record (AI-36)
+  - one policy query (AI-31)
+  - feature manifests and model registry enforced by the gateway (AI-2,
+    AI-10)
+
+  Migrations 140 and 141.
+- **Phase 1, still to do:** the model adapter with fallback, background jobs
+  through the gateway with job tokens (AI-12, AI-34), and deploying from GitHub
+  with a canary (AI-41, which needs a GitHub secret from Haziq). Z5 is done for the three embedders; `ai_proxy`
 and `generate_signals` move the key into a header in phase 1.
 
 ---
