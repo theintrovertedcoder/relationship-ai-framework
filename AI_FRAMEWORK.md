@@ -10,9 +10,10 @@ how Mole "learns", which layer does what, and where each layer runs.*
 own copy. File paths in backticks (`supabase/functions/ai_proxy/index.ts` and
 the like) are paths in Mole-V3.*
 
-*Status: **agreed, 8 Oct 2026.** Haziq agreed with every default in §12
+*Status: **agreed, 8 Oct 2026; phases 0–3 built 29 Oct 2026 (awaiting deploy).** Haziq agreed with every default in §12
 (AI-1 to AI-46). Each gap in §13 becomes a task with a test that fails until
-the task is done. Phase 0 (Z1–Z4) started the same day.*
+the task is done. Phase 0 (Z1–Z4) started the same day. Phases 0–3 are built in
+Mole-V3 and wait to be deployed (§13).*
 
 **How to read this.** §1 is the ten-line version. §2–§4 are the rules (data,
 consent, providers). §5 is the target architecture and topology, and §6 is
@@ -1394,6 +1395,18 @@ made by number, and recorded here with its date.
 | **AI-45** | Offline scans wait in an outbox on the phone and are read when it's back online | Agree |
 | **AI-46** | News comes mainly from the signals worker's feeds. Web-searched lookups only on Refresh, and weekly for companies at least 3 people follow, under a budget. `docs/CAPACITY_AND_COST.md` is redone | Agree |
 
+**Decisions taken during the build (22–29 Oct 2026).** Recorded here as the rule above asks. Haziq has not yet confirmed them.
+
+| # | Decision | Default |
+|---|---|---|
+| **AI-47** | The one door is a function called over HTTP, with a single-use job token for background work. Functions are pasted into Supabase one file at a time, so they can't share code. A token lasts 5 minutes, is stored as a hash, and names the person it acts for | Taken in the build, to confirm |
+| **AI-48** | No model version is written into the code or the config by hand. A model is pinned from the den, against Google's live model list, and only after a passing eval. Google's versions change monthly, so any number written here would be wrong within weeks | Taken in the build, to confirm |
+| **AI-49** | The model for a feature changes only through pin and unpin. A database trigger refuses any other write, and every change is audited. A deprecated model is routed to its successor, so a retired 3.5 Flash goes to 3.6 | Taken in the build, to confirm |
+| **AI-50** | Alerts are emailed to staff with AI write access by a mailer that a schedule calls every 15 minutes. An alert is marked as sent only after the email has gone | Taken in the build, to confirm |
+| **AI-51** | A contact who asks to be left out must confirm by a link sent to that address. The address is stored as a keyed hash, the code works once and lasts 24 hours, and every address gets the same answer. Withdrawing works the same way | Taken in the build, to confirm |
+| **AI-52** | A sensitive sentence in a note is replaced by "[personal detail removed]" before it reaches a model. In embeddings and in answers it is removed outright, with no marker | Taken in the build, to confirm |
+| **AI-53** | A meeting agenda must come back as exactly three bullet lines. Anything else is refused and logged as a bad output, and the person sees the plain failure message | Taken in the build, to confirm |
+
 ---
 
 ## 13 · From today to the target
@@ -1413,28 +1426,29 @@ mapping is visible.
 | | Z5: provider key in a header, not the URL | `no provider key in a URL` |
 | | Lane B through `ai_call_log`, model from config | `every model call is logged` |
 | | Lane B moves from daily to Refresh plus weekly, under a budget (AI-46) | `no company is web-searched twice in 7 days by the schedule` |
-| **1 · One door** | One policy query (`ai_policy_check`) and config cache, inside the speed budgets (§11.4) | `gateway overhead stays under 150 ms` (timed test with the database suite) |
-| | Model adapter and job registry (`ai_models`, `ai_features`) inside the gateway. `provider` column used | `features without a manifest are refused` |
-| | `embed_*`, `match_contacts`, `generate_signals` call the gateway (AI-12) | `only the gateway calls a provider host` (source scan) |
-| | Pin every model (AI-10), once F1/F2/F3 evals exist for the pinned versions | `no -latest alias in config` |
-| | Region pin and `wrong_region` check (AI-35) | `the gateway refuses outside Singapore` |
-| | Reads signed in as the person; job tokens for background work (AI-34) | `the gateway can't read another user's contacts`; `a background call without a valid job token reads nothing` |
-| | Disclosure record (AI-36) | `every call that sends personal data writes a disclosure row` |
-| | Deploy from GitHub with canary and rollback flag (AI-41) | Contract suite runs against `ai_gateway_next` before promotion |
-| **2 · Send less** | Context fetched by the server for search (AI-5), shortlist and re-rank with labels (AI-6, AI-7) | `client never sends contact records to the gateway` |
-| | Scrubber (§2.4.3), profile field limits, untrusted wrapping (§10.1), output guard (§10.3) | Scrubber unit tests with Malaysian and Singaporean formats; injection set |
-| | Drop the name from embedding text (AI-27), with a re-embed backfill | `embedding text excludes name and P3` |
-| | Sensitive screen and four-language lists (AI-33, AI-37) | One case per language per category |
-| | Streaming through the guard (AI-32) | `a stream never shows {{c1}} or an unchecked sentence` |
-| | Other people's text kept out of third-party answers (AI-42) | `other_person text never reaches a shared-output prompt` |
-| **3 · Control** | Prompt registry and den editor with the eval gate (AI-13, AI-20) | `unpublished or unevaluated prompt is never served` |
-| | Eval runs as den buttons; F1 (B6), F2, F3, F7 sets; injection set | `every feature has an eval set with hard gates` |
-| | Settings → Mole AI, the ✦ strip, "What Mole has worked out" (AI-15, AI-16) | e2e: switching all AI off makes zero model calls |
-| | AI Control additions and alerts (§11) | `zero-calls alert fires for a silent feature` |
-| | Set sizes, ranges and judge check (AI-43, AI-44) | `a pass needs the lower bound over the mark` |
-| | Contacts' choice: profile setting, privacy-page form, `ai_suppressions` (AI-38) | `a suppressed email is skipped by search, signals and news` |
-| | "What Mole sent about…" on each contact, the incident page, the team AI register (AI-36, AI-40, AI-39) | e2e on each page |
-| | Offline scan outbox (AI-45) | `a scan taken offline is read once online` |
+| **1 · One door** | One policy query (`ai_policy_check`) and config cache, inside the speed budgets (§11.4) ✓ built (migrations 140–141) | `gateway overhead stays under 150 ms` (timed test with the database suite) |
+| | Model adapter and job registry (`ai_models`, `ai_features`) inside the gateway. `provider` column used ✓ built (migrations 140–141) | `features without a manifest are refused` |
+| | `embed_*`, `match_contacts`, `generate_signals` call the gateway (AI-12) ✓ built (migration 154) | `only the gateway calls a provider host` (source scan) |
+| | Pin every model (AI-10), once F1/F2/F3 evals exist for the pinned versions ✓ built as pin from the den after a passing eval (migrations 156, 160) | `no -latest alias in config` |
+| | Region pin and `wrong_region` check (AI-35) ✓ built (migrations 140–141) | `the gateway refuses outside Singapore` |
+| | Reads signed in as the person; job tokens for background work (AI-34) ✓ built (migration 154) | `the gateway can't read another user's contacts`; `a background call without a valid job token reads nothing` |
+| | Disclosure record (AI-36) ✓ built (migrations 140–141) | `every call that sends personal data writes a disclosure row` |
+| | Deploy from GitHub with canary and rollback flag (AI-41) — not built | Contract suite runs against `ai_gateway_next` before promotion |
+| **2 · Send less** | Context fetched by the server for search (AI-5), shortlist and re-rank with labels (AI-6, AI-7) ✓ built (in `ai_proxy`) | `client never sends contact records to the gateway` |
+| | Scrubber (§2.4.3), profile field limits, untrusted wrapping (§10.1), output guard (§10.3) ✓ built (in `ai_proxy`) | Scrubber unit tests with Malaysian and Singaporean formats; injection set |
+| | Drop the name from embedding text (AI-27), with a re-embed backfill ✓ built (migration 158) | `embedding text excludes name and P3` |
+| | Sensitive screen and four-language lists (AI-33, AI-37) ✓ built (in `ai_proxy`) | One case per language per category |
+| | Streaming through the guard (AI-32) ✓ built (in `ai_proxy`) | `a stream never shows {{c1}} or an unchecked sentence` |
+| | Other people's text kept out of third-party answers (AI-42) ✓ built (in `ai_proxy`) | `other_person text never reaches a shared-output prompt` |
+| **3 · Control** | Prompt registry and den editor with the eval gate (AI-13, AI-20) ✓ built (migrations 160, 162) | `unpublished or unevaluated prompt is never served` |
+| | Eval runs as den buttons; F1 (B6), F2, F3, F7 sets; injection set ✓ built (migrations 156, 160) | `every feature has an eval set with hard gates` |
+| | Settings → Mole AI, the ✦ strip, "What Mole has worked out" (AI-15, AI-16) ✓ built (migration 159) | e2e: switching all AI off makes zero model calls |
+| | AI Control additions and alerts (§11) ✓ built (migrations 155, 157) | `zero-calls alert fires for a silent feature` |
+| | Set sizes, ranges and judge check (AI-43, AI-44) ✓ built (migration 156) | `a pass needs the lower bound over the mark` |
+| | Contacts' choice: profile setting, privacy-page form, `ai_suppressions` (AI-38) ✓ built (migrations 159, 161) | `a suppressed email is skipped by search, signals and news` |
+| | "What Mole sent about…" on each contact (AI-36) ✓ built (migration 159) | e2e on the page |
+| | The incident page and the team AI register (AI-40, AI-39) — not built | e2e on each page |
+| | Offline scan outbox (AI-45) — not built | `a scan taken offline is read once online` |
 | **4 · Second provider** | **First: Privacy Policy and lawyer (§14).** Then Vertex `asia-southeast1` (AI-9), Claude adapter, fallback (AI-11) | `fallback only to an evaluated model` |
 | **5 · Memory** | `contact_facts` with source and status, source chips, fading, forget (§7) | `AI cannot write a confirmed fact` |
 | | P1 "Remember this", then P2 brief, then P3 drafts, then P4 reflection, each opt-in | Per feature, as it's built |
@@ -1465,6 +1479,85 @@ redeployed in order, then the embedding backfill.
   through the gateway with job tokens (AI-12, AI-34), and deploying from GitHub
   with a canary (AI-41, which needs a GitHub secret from Haziq). Z5 is done for the three embedders; `ai_proxy`
 and `generate_signals` move the key into a header in phase 1.
+
+**Built 22–29 Oct 2026 (Mole-V3, awaiting deploy):**
+- **Migration 154, job tokens (AI-12, AI-34).** Background work gets a
+  single-use token that lasts 5 minutes (15 at most) and is stored as a hash.
+  `ai_proxy` is the only code that calls Google, and a source-scan test keeps
+  it so. The embedders, `match_contacts` and `generate_signals` are thin
+  callers that read IDs only. The health check's model probe is the one allowed
+  exception: it lists models only, with the key in a header.
+- **Migration 155, AI alerts (§11).** Every 15 minutes: a silent feature (5
+  calls in 7 days, none in 24 hours), errors (10 calls an hour, 20% failed),
+  budget at 80% for company news, and a model shutting down within 30 days or
+  unknown. They show as a strip at the top of the den's AI Control.
+- **Migration 156, evals and pinning (AI-10, AI-20, AI-43, AI-44).** 75 starter
+  text cases (25 each for agenda, chat and search). Eval runs, the Wilson lower
+  bound, and a pass mark per feature (card scan 0.93 on 150, search 0.88 on 200,
+  chat 0.85 on 100, agenda 0.90 on 60). A model catalogue from Google's live
+  list. Pinning refuses a model that isn't served, an alias, a model with no
+  passing eval, or one near shutdown.
+- **Migration 157, alert delivery (§11).** A mailer emails staff with AI write
+  access once per new alert, through Resend.
+- **Migration 158, embedding text (AI-27).** No name, phone or email in the
+  text. Version 2, with a den button to re-embed older rows.
+- **Phase 2, inside `ai_proxy` (§2.4.3, §10.1, §10.3, AI-33, AI-37).** The
+  scrubber (Malaysian and Singaporean phones, MyKad, NRIC and FIN, passport,
+  cards that pass the Luhn check, bank accounts). The sensitive screen in
+  English, Malay, Chinese and Tamil. Untrusted text fenced everywhere. Stand-in
+  labels such as `{{c1}}` for the agenda. The output guard (shape, lengths,
+  labels, sensitive sentences, links only from the FAQ), with failures logged
+  as `ai_bad_output`. Disclosure rows record what was removed. A 21-string
+  injection set runs against all 7 prompt surfaces.
+- **Migration 159, user controls (AI-15, AI-16, AI-36, AI-38).** Settings →
+  Mole AI has an all-off switch and five feature switches, each with a "what is
+  sent" line. Both are enforced in the policy query (`user_off`) and in
+  background jobs. "What Mole sent about this person" is on the contact page,
+  with a 30-day summary. Suppressed contacts are skipped by search, embedding,
+  signals and news. The semantic match functions are closed to the server only;
+  they had been callable by anyone.
+- **Migration 160, live evals and the pin lock (AI-10, AI-20).** Staff run an
+  eval inside `ai_proxy`, using the same prompt builder, scrub, fence and guard
+  as the real feature, in batches of 10. Scores stay on the server. Nothing
+  is disclosed, and each run is logged as `eval:<feature>`. A trigger lets a
+  feature's model change only through pin and unpin. The den has Run eval, Pin
+  and Unpin, and the free model dropdown is gone.
+- **Migration 161, leave-me-out confirmed (§3.6, AI-38).** The owner of the
+  address confirms by email link. A keyed hash, a single-use code stored
+  hashed for 24 hours, rate limits, and the same answer for every address.
+- **Migration 162, prompt registry (AI-13, AI-20).** The system part is fixed
+  and changes only by migration. The task part is edited in the den. A draft is
+  evaluated, then published only with a passing eval on that version. One
+  version is published per feature, with the built-in text as the fallback.
+  This one was still in progress on 29 Oct.
+- **Tests.** About 1,350 unit tests and 670 database checks pass. Each new
+  rule was checked by breaking the code and watching its test fail. The
+  end-to-end journeys for Settings → Mole AI run once, at the end.
+
+**Where the phases stand (29 Oct 2026).**
+- **Phase 1** is built except deploying from GitHub with a canary (AI-41).
+  "Pin every model" is built as pin from the den after a passing eval. No
+  version is hard-coded, because Google's versions change monthly and a
+  deprecated 3.5 Flash is routed to 3.6 automatically.
+- **Phase 2** is built in full.
+- **Phase 3** has the prompt registry, eval runs as den buttons, Settings →
+  Mole AI, the AI Control alerts, set sizes with the Wilson bound, contacts'
+  choice and "What Mole sent". It does not have the offline scan outbox
+  (AI-45), the incident page (AI-40) or the team AI register (AI-39).
+- **Phases 4–6** are not started.
+- **Still open.** Real-model evals need cases: 150 card photos for the card
+  scan, 200 for search, 100 for chat and 60 for the agenda. Evals have no
+  per-staff rate limit yet.
+
+**What only Haziq can do next:**
+- **Privacy Policy to the lawyer.** It must cover sending data across borders
+  to Google for AI processing, and the wording for contacts who opt out. This
+  gates Vertex AI in Singapore (AI-9).
+- **150 card photos** for the card-scan eval.
+- **A Supabase access token as a GitHub secret**, for the deploy with a canary
+  (AI-41).
+- **Paste migrations 154 to 162 and redeploy the functions**, in the order
+  given in Mole-V3's `docs/YOUR_TURN.md`.
 
 ---
 
