@@ -1399,13 +1399,13 @@ made by number, and recorded here with its date.
 
 | # | Decision | Default |
 |---|---|---|
-| **AI-47** | The one door is a function called over HTTP, with a single-use job token for background work. Functions are pasted into Supabase one file at a time, so they can't share code. A token lasts 5 minutes, is stored as a hash, and names the person it acts for | Taken in the build, to confirm |
-| **AI-48** | No model version is written into the code or the config by hand. A model is pinned from the den, against Google's live model list, and only after a passing eval. Google's versions change monthly, so any number written here would be wrong within weeks. A deprecated 3.5 Flash is routed to 3.6 automatically | Taken in the build, to confirm |
-| **AI-49** | The model for a feature changes only through pin and unpin. A database trigger refuses any other write, and every change is audited. A deprecated model is routed to its successor, so a retired 3.5 Flash goes to 3.6 | Taken in the build, to confirm |
-| **AI-50** | Alerts are emailed to staff with AI write access by a mailer that a schedule calls every 15 minutes. An alert is marked as sent only after the email has gone | Taken in the build, to confirm |
-| **AI-51** | A contact who asks to be left out must confirm by a link sent to that address. The address is stored as a keyed hash, the code works once and lasts 24 hours, and every address gets the same answer. Withdrawing works the same way | Taken in the build, to confirm |
-| **AI-52** | A sensitive sentence in a note is replaced by "[personal detail removed]" before it reaches a model. In embeddings and in answers it is removed outright, with no marker | Taken in the build, to confirm |
-| **AI-53** | A meeting agenda must come back as exactly three bullet lines. Anything else is refused and logged as a bad output, and the person sees the plain failure message | Taken in the build, to confirm |
+| **AI-47** | The one door is a function called over HTTP, with a single-use job token for background work. Functions are pasted into Supabase one file at a time, so they can't share code. A token lasts 5 minutes, is stored as a hash, and names the person it acts for | Agreed 29 Oct (Haziq: "go with your rec") |
+| **AI-48** | No model version is written into the code or the config by hand. A model is pinned from the den, against Google's live model list, and only after a passing eval. Google's versions change monthly, so any number written here would be wrong within weeks. A deprecated 3.5 Flash is routed to 3.6 automatically | Agreed 29 Oct (Haziq: "go with your rec") |
+| **AI-49** | The model for a feature changes only through pin and unpin. A database trigger refuses any other write, and every change is audited. A deprecated model is routed to its successor, so a retired 3.5 Flash goes to 3.6 | Agreed 29 Oct (Haziq: "go with your rec") |
+| **AI-50** | Alerts are emailed to staff with AI write access by a mailer that a schedule calls every 15 minutes. An alert is marked as sent only after the email has gone | Agreed 29 Oct (Haziq: "go with your rec") |
+| **AI-51** | A contact who asks to be left out must confirm by a link sent to that address. The address is stored as a keyed hash, the code works once and lasts 24 hours, and every address gets the same answer. Withdrawing works the same way | Agreed 29 Oct (Haziq: "go with your rec") |
+| **AI-52** | A sensitive sentence in a note is replaced by "[personal detail removed]" before it reaches a model. In embeddings and in answers it is removed outright, with no marker | Agreed 29 Oct (Haziq: "go with your rec") |
+| **AI-53** | A meeting agenda must come back as exactly three bullet lines. Anything else is refused and logged as a bad output, and the person sees the plain failure message | Agreed 29 Oct (Haziq: "go with your rec") |
 
 ---
 

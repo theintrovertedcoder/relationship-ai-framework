@@ -575,7 +575,7 @@ ul.decs li > span:first-child { font: 500 13px/1.5 var(--mono); color: var(--pur
   <div class="tiles">
     <div class="tile wait"><b>9</b><span>migrations to paste, 155 to 163</span></div>
     <div class="tile wait"><b>8</b><span>functions to deploy: 6 redeployed, 2 new</span></div>
-    <div class="tile wait"><b>7</b><span>decisions to confirm, AI-47 to AI-53</span></div>
+    <div class="tile"><b>7</b><span>more decisions agreed 29 Oct, AI-47 to AI-53</span></div>
   </div>
 </section>
 
@@ -1030,8 +1030,8 @@ payments at Kopi Labs. Call her on <span class="p">[phone]</span>.
       <span class="done-when"><b>Done when</b> the secret is listed in the repository's Actions secrets.</span></div></li>
   </ol>
 
-  <h3 class="subheading" style="margin-top:8px">Confirm decisions AI-47 to AI-53</h3>
-  <p class="small">These were taken while building, so the build wouldn't stop and ask. Say "agreed", or name the number you want changed.</p>
+  <h3 class="subheading" style="margin-top:8px">Decisions AI-47 to AI-53, agreed 29 Oct</h3>
+  <p class="small">Taken while building, so the build wouldn't stop and ask, and agreed on 29 Oct ("go with your rec"). A later change is made by number.</p>
   <ul class="decs">
     <li><span>AI-47</span><span>One door over HTTP with job tokens: the app and the jobs call <code>ai_proxy</code>, and background work carries a single-use token.</span></li>
     <li><span>AI-48</span><span>Pin from the den after a passing eval, never a hard-coded version in the code.</span></li>
@@ -1518,8 +1518,8 @@ payments at Kopi Labs. Call her on <span class="p">[phone]</span>.
 <section id="decisions">
   <div class="intro">
     <span class="eyebrow">§12</span>
-    <h2 class="title">46 decisions agreed, 7 more to confirm</h2>
-    <p>The first 46 were agreed on 8 Oct 2026, every default as written. AI-47 to AI-53 were taken while building and wait for your yes (they are also in <a href="#todo">your list</a>). A later change is made by number.</p>
+    <h2 class="title">53 decisions, all agreed</h2>
+    <p>The first 46 were agreed on 8 Oct 2026, every default as written. AI-47 to AI-53 were taken while building and agreed on 29 Oct. A later change is made by number.</p>
   </div>
   <details class="dec" open>
     <summary>Show all 53</summary>
@@ -1813,6 +1813,6 @@ payments at Kopi Labs. Call her on <span class="p">[phone]</span>.
     "The twelve principles bind every AI feature", "Data classes P0–P4, P-Org; the gateway refuses anything outside a manifest", "No training or fine-tuning on user data", "Direct channels never go into a prompt as text", "The server fetches context; the phone sends IDs", "At most 30 records per call; the whole-book path is removed", "Stand-in labels for IDs, and for names where possible", "Two providers: Gemini now, a second provider later (phase 4)", "Move to Vertex AI in Singapore (after L1, L2)", "Pinned model versions; shutdown dates watched", "Fallback only to a model that passed the eval", "One gateway; background jobs call it", "Prompts versioned in the den, published after eval", "AI writes only suggested facts", "The ✦ strip on every AI output", "Settings → Mole AI: switches and forget", "Consent: on for scan, search, chat, agenda; opt-in for the rest", "Loop: organisation switch, then personal opt-in", "Retention table; no prompt content kept", "Every feature has an eval set with hard gates", "Card scan launches only at zero invented fields", "Retire made-up on-demand Signals", "Keep 078 plan limits for 30 days; add feature budgets", "Alerts, including zero successful calls in 24 hours", "No web enrichment of contacts", "AI never sends, edits or books on its own", "Drop names from embedding text", "Weekly 15-minute AI review in the den", "Bingo and marketing sites use the same rules", "Voice register fixed per feature and tested", "Speed budgets per feature; one policy query", "Streaming only through the guard", "Sensitive details screened before sending", "Reads signed in as the person; job tokens", "Gateway pinned to Singapore", "Disclosure record, no content", "Four languages; forms of address kept", "Contacts can keep themselves out", "The team's AI rules", "Incident page and notification clocks", "Gateway ships with canary and rollback flag", "One person's words never steer another's answers", "Pass marks on the lower end of the 95% range", "Judge checked against people first", "Offline scans wait in an outbox", "News from feeds; web searches limited and budgeted",
     "One door over HTTP with job tokens", "Pin from the den after a passing eval, never a hard-coded version", "A model changes only through Pin or Unpin", "Alert email through a scheduled mailer", "Leave-me-out confirmed by email, stored as a keyed fingerprint", "Sensitive sentences in notes become [personal detail removed]", "Agenda answers must be exactly three bullets"
   ];
-  document.getElementById("declist").innerHTML = DEC.map(function (d, i) { return "<div><span>AI-" + (i + 1) + "</span><span>" + h(d) + (i >= 46 ? ' <span class="pending">to confirm</span>' : "") + "</span></div>"; }).join("");
+  document.getElementById("declist").innerHTML = DEC.map(function (d, i) { return "<div><span>AI-" + (i + 1) + "</span><span>" + h(d) + (i >= 46 ? ' <span class="pending">agreed 29 Oct</span>' : "") + "</span></div>"; }).join("");
 })();
 </script>
