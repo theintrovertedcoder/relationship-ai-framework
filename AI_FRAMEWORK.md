@@ -1434,12 +1434,12 @@ mapping is visible.
 | | Reads signed in as the person; job tokens for background work (AI-34) ✓ built (migration 155) | `the gateway can't read another user's contacts`; `a background call without a valid job token reads nothing` |
 | | Disclosure record (AI-36) ✓ built (migrations 140–141) | `every call that sends personal data writes a disclosure row` |
 | | Deploy from GitHub with canary and rollback flag (AI-41) — not built | Contract suite runs against `ai_gateway_next` before promotion |
-| **2 · Send less** | Context fetched by the server for search (AI-5), shortlist and re-rank with labels (AI-6, AI-7) ✓ built (in `ai_proxy`) | `client never sends contact records to the gateway` |
+| **2 · Send less** | Context fetched by the server for search (AI-5) ✓ built (Z2 and migration 155: the client sends no records; search is name matching plus Mole's own vectors). Shortlist and re-rank with labels (AI-6, AI-7): **not built**, search runs without a model re-rank today | `client never sends contact records to the gateway` |
 | | Scrubber (§2.4.3), profile field limits, untrusted wrapping (§10.1), output guard (§10.3) ✓ built (in `ai_proxy`) | Scrubber unit tests with Malaysian and Singaporean formats; injection set |
 | | Drop the name from embedding text (AI-27), with a re-embed backfill ✓ built (migration 159) | `embedding text excludes name and P3` |
 | | Sensitive screen and four-language lists (AI-33, AI-37) ✓ built (in `ai_proxy`) | One case per language per category |
-| | Streaming through the guard (AI-32) ✓ built (in `ai_proxy`) | `a stream never shows {{c1}} or an unchecked sentence` |
-| | Other people's text kept out of third-party answers (AI-42) ✓ built (in `ai_proxy`) | `other_person text never reaches a shared-output prompt` |
+| | Streaming through the guard (AI-32): **not built**; no feature streams yet, so the guard checks whole answers | `a stream never shows {{c1}} or an unchecked sentence` |
+| | Other people's text kept out of third-party answers (AI-42): **not built** as its own rule; the fence and the sensitive screen cover part of it | `other_person text never reaches a shared-output prompt` |
 | **3 · Control** | Prompt registry and den editor with the eval gate (AI-13, AI-20) ✓ built (migrations 161, 163) | `unpublished or unevaluated prompt is never served` |
 | | Eval runs as den buttons; F1 (B6), F2, F3, F7 sets; injection set ✓ built (migrations 157, 161) | `every feature has an eval set with hard gates` |
 | | Settings → Mole AI, the ✦ strip, "What Mole has worked out" (AI-15, AI-16) ✓ built (migration 160) | e2e: switching all AI off makes zero model calls |
@@ -1539,7 +1539,7 @@ and `generate_signals` move the key into a header in phase 1.
   "Pin every model" is built as pin from the den after a passing eval. No
   version is hard-coded, because Google's versions change monthly and a
   deprecated 3.5 Flash is routed to 3.6 automatically.
-- **Phase 2** is built in full.
+- **Phase 2** is built except the search re-rank (AI-6, AI-7), streaming through the guard (AI-32, nothing streams yet) and AI-42.
 - **Phase 3** has the prompt registry, eval runs as den buttons, Settings →
   Mole AI, the AI Control alerts, set sizes with the Wilson bound, contacts'
   choice and "What Mole sent". It does not have the offline scan outbox
