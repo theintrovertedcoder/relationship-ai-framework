@@ -529,6 +529,51 @@ switched on.
   provider is down, recall falls back to plain database search. It doesn't fall
   back to sending the whole book.
 
+### 4.5 Any model for any text task (added 19 Nov 2026)
+
+Haziq, 19 Nov: *"Claude the three and make sure all models are interchangeable for any tasks"*. The register
+(§6.5) showed Claude Haiku 5.5 three to five times cheaper than Gemini 3.5 Flash-Lite on Mole's measured jobs,
+and Google's limit on Mole's key was blocking the three features still waiting for a pin.
+
+- **Every text task has two slots:** a Google model and a Claude model. Each is pinned in the den, and only
+  after an eval of that model on that task passes (AI-48). That's the same rule for both, so a model is
+  never chosen on reputation.
+- **The order is fixed:** the pinned Claude model first, then the pinned Google model behind it if the den
+  allows a fallback for that task. With only one pinned, that one answers.
+- **One request, any reader.** The gateway builds a request once (text, photos, PDFs, text files, an answer
+  shape) and `providers.ts` gives it to whichever model is asked. So the prompt, the fence (§10.1), the
+  locked rules and the output guard (§10.3) are the same whoever answers.
+- **The disclosure record (§2.7) names whoever is about to be sent the request.** A fallback to the second
+  company is a second record.
+- **A photo Claude can't read** (an iPhone's HEIC) goes to Google, if Google is pinned.
+
+**What stays with one provider, and why:**
+
+| Task | Provider | Why |
+|---|---|---|
+| Company news | Google | It needs Google's web search, and the sources it keeps come from Google's grounding metadata |
+| Embeddings | Google | Every contact, story and question has to sit in one vector space (§4.4). Changing the model means a migration and re-embedding, not a pin |
+| Voice notes | Cloudflare (Whisper) | An audio model, not a text one |
+
+**Where the data goes.** A Claude call goes to Anthropic, which serves it globally, not from Singapore (§4.2).
+Card scans have done so since 13 Nov, and the privacy notice names Anthropic. With 4.5, pinning Claude for a
+task also sends Anthropic that task's data:
+
+| Task | What is sent |
+|---|---|
+| Visitor chat | The member's published page and a visitor's question |
+| Facts from a file, page drafts | The member's own uploaded files |
+| Sunny's summary on a request | A requester's message and their company's website |
+| Meeting agenda | A meeting's title and context, with the contact's name replaced by a label |
+| Help chat | The question and Mole's help answers |
+| Photo search | The photo |
+
+The lawyer confirms this before Claude is pinned for the file features (§14, B2).
+
+**Cloudflare's text models** are the next provider for this list (§6.5 prices them). A third slot needs the
+provider in `providers.ts`, a way to register its models in the den, and a decision on where Cloudflare
+processes the data. None of that is built yet.
+
 ---
 
 ## 5 · Target architecture
@@ -1606,6 +1651,7 @@ made by number, and recorded here with its date.
 | **AI-52** | A sensitive sentence in a note is replaced by "[personal detail removed]" before it reaches a model. In embeddings and in answers it is removed outright, with no marker | Agreed 29 Oct (Haziq: "go with your rec") |
 | **AI-53** | A meeting agenda must come back as exactly three bullet lines. Anything else is refused and logged as a bad output, and the person sees the plain failure message | Agreed 29 Oct (Haziq: "go with your rec") |
 | **AI-54** | Text from the open web gets its own rule, a fenced input and an output guard before the feature can be switched on, because a web page is the one source anyone can write. A story that carries a phone number, an email or a link, or whose source isn't an https page from the search, is refused, not cleaned up (§10.7) | Taken 19 Nov (Haziq: "Merge and deploy the AI fix and add it to the AI framework") |
+| **AI-55** | Any model for any text task. Every text task has a Google slot and a Claude slot, each pinned only after that model passes that task's eval. The pinned Claude model answers first, with the pinned Google model behind it if the den allows a fallback. The same prompt, fence and guard apply whoever answers, and each company sent the data gets its own disclosure. Company news (web search), embeddings (one vector space) and voice notes (audio) stay with one provider (§4.5) | Taken 19 Nov (Haziq: "Claude the three and make sure all models are interchangeable for any tasks") |
 
 ---
 
