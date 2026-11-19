@@ -806,7 +806,7 @@ at the provider's list price. A row with no measurement says so, and its cost is
 | Ask Sunny chat (help) | Gemini Flash-Lite (alias) | 2,355 / 4 | 1 live | $0.72 | not enough | On; the FAQs are most of the input |
 | Meeting agenda (F7) | Gemini Flash (alias) | 54 / 40 | 1 live | $0.19 | not enough | Refused by Google's limit |
 | Embedding a contact (F8) | gemini-embedding-001 | 38 / none | 32 live | **$0.006** | 0.8 s / 1.0 s | Live |
-| Voice note written out | Cloudflare Whisper | per audio minute | none yet | $0.51 per 1,000 minutes | not measured | Keys added 19 Nov; first note due 11:53 UTC |
+| Voice note written out | Cloudflare Whisper large v3 turbo | 14 s of audio | 1 live (19 Nov, 12:03) | $0.50 per 1,000 minutes; this note $0.00012 | 8.1 s for 14 s of audio | Live since 19 Nov; about 214 minutes a day free |
 | Sunny's summary on a request | Gemini (to be pinned) | not measured | none | list price only | not measured | Waiting on a pin |
 | Company news with web search (F5) | Gemini with Search grounding | not measured | none | tokens plus $14 per 1,000 searches after 5,000 free a month | not measured | Off until May 2027 |
 | Signals, scheduled (F4, F6) | Gemini Flash (alias) | not measured | none | list price only | not measured | Off |
