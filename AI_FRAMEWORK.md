@@ -782,12 +782,12 @@ at the provider's list price. A row with no measurement says so, and its cost is
 | Anthropic · Claude Haiku 5.5 | $0.10 | $0.50 | Anthropic's list (prompts under 100K tokens) |
 | Anthropic · Claude Sonnet 5.5 | $2.00 | $10.00 | Anthropic's list |
 | Anthropic · Claude Opus 5.5 | $4.00 | $20.00 | Anthropic's list |
-| Google · Gemini 3.5 Flash-Lite | $0.30 | $2.50 | Third-party listings quoting Google; **confirm on Google's page** (not reachable from the session) |
-| Google · Gemini 3.8 Flash | $0.75 | $3.75 | Google Cloud's page: introductory to 31 Dec 2026, then **$1.50 / $7.50** |
-| Google · Gemini 3.1 Flash-Lite | $0.25 | $1.50 | Google's Gemini 3 guide |
-| Google · gemini-embedding-001 | $0.15 | none | Google's launch post |
-| Google · Search grounding (Gemini 3) | 5,000 searches a month free, then $14 per 1,000 | | Google's pricing page |
-| Cloudflare · Whisper large v3 turbo | $0.00051 per audio minute (46.63 neurons a minute at $0.011 per 1,000) | | Cloudflare's model page; its pricing page rounds to $0.0005. 10,000 neurons a day are free, about 214 minutes |
+| Google · Gemini 3.5 Flash-Lite | $0.30 | $2.50 | Google's pricing page (aistudio.google.com/docs/pricing, read 19 Nov) |
+| Google · Gemini 3.8 Flash | $0.75 | $3.75 | Google's pricing page: to 31 Dec 2026, then **$1.50 / $7.50** |
+| Google · Gemini 3.1 Flash-Lite | $0.25 | $1.50 | Google's pricing page |
+| Google · gemini-embedding-001 | $0.15 | none | Google's pricing page (batch $0.075) |
+| Google · Search grounding (Gemini 3) | 5,000 searches a month free, then $14 per 1,000, at most 1,500 a day | | Google's pricing page |
+| Cloudflare · Whisper large v3 turbo | $0.0005 per audio minute (46.63 neurons at $0.011 per 1,000 is $0.00051) | | Cloudflare's pricing page (updated 18 Nov). 10,000 neurons a day are free, about 214 minutes of voice notes |
 
 **The register:**
 
@@ -822,10 +822,43 @@ at the provider's list price. A row with no measurement says so, and its cost is
 3. **Output is where Flash-Lite costs.** Page drafts write about 570 tokens, at $2.50 per million: $1.49 per
    1,000, seven times a visitor answer.
 4. **Web search is the one expensive line.** It is still the AI-46 rule: weekly, under a budget, never daily.
-5. **The den's spend figures under-count Google.** The gateway's rates (`COST_RATES` in `ai_proxy`) still price
-   Flash-Lite at $0.075 / $0.30 and Flash at $0.15 / $0.60, four to eight times under the prices above.
-   Sonnet 5.5 had no rate at all until 19 Nov (it was costed as Gemini). Update the Google rates once Google's
-   page confirms them.
+5. **The den's spend figures under-counted Google** four to eight times: the gateway priced Flash-Lite at
+   $0.075 / $0.30 and Flash at $0.15 / $0.60, and the pinned ids (`gemini-3.5-flash-lite`, `gemini-3.8-flash`)
+   matched no rate at all. Sonnet 5.5 had none either. All fixed on 19 Nov in `COST_RATES`, with Gemini 3.8
+   Flash's 1 January rise applied by the gateway itself.
+
+**Cloudflare Workers AI: the models Mole could use, and what our measured jobs would cost on them.** Mole uses one
+Cloudflare model today, Whisper, for voice notes. The gateway cannot call Cloudflare's text models, and the
+framework names only Gemini and Claude for text (§4), so these are **candidates, not choices**: using one needs a
+decision here, an eval that passes (AI-48), and a look at where Cloudflare runs the model (§4.2 pins Mole's AI to
+Singapore; Workers AI runs near the caller). Prices are Cloudflare's, per million tokens, billed as neurons at
+$0.011 per 1,000 after 10,000 free a day.
+
+| Job (Mole's measured tokens, in / out) | Claude Haiku 5.5 | Gemini 3.5 Flash-Lite | CF gpt-oss-20b | CF gpt-oss-120b | CF Gemma SEA-LION v4 27B | CF Llama 3.1 8B fast | CF Gemma 4 26B |
+|---|---|---|---|---|---|---|---|
+| Price, in / out | $0.10 / $0.50 | $0.30 / $2.50 | $0.20 / $0.30 | $0.35 / $0.75 | $0.351 / $0.555 | $0.045 / $0.384 | $0.10 / $0.30 |
+| Visitor answer (254 / 13) | $0.03 | $0.11 | $0.06 | $0.10 | $0.10 | $0.02 | $0.03 |
+| Ask Sunny about your people (1,256 / 137) | $0.19 | $0.72 | $0.29 | $0.54 | $0.52 | $0.11 | $0.17 |
+| Page drafts (238 / 568) | $0.31 | $1.49 | $0.22 | $0.51 | $0.40 | $0.23 | $0.19 |
+| Follow-up draft (544 / 47) | $0.08 | $0.28 | $0.12 | $0.23 | $0.22 | $0.04 | $0.07 |
+
+Cost per 1,000 calls. The token counts were measured on one provider, and each provider counts tokens its own way,
+so a row on another provider is an estimate (counts can differ by a third or more), not a measurement. Quality is not measured on
+any Cloudflare text model: a cheap model that fails the eval is not cheap.
+
+| Other Cloudflare models that fit a Mole job | Price | Note |
+|---|---|---|
+| Whisper (the original) | $0.0005 per audio minute | Older than the turbo Mole uses, same price |
+| Deepgram Nova 3 | $0.0052 per audio minute (live: $0.0092) | Ten times Whisper; worth an eval only if Whisper's Malay is poor |
+| BGE M3 embeddings | $0.012 per million tokens | Multilingual. A contact's embedding at 38 tokens: $0.0005 per 1,000, against Gemini's $0.006. Switching means re-embedding every contact and news story |
+| EmbeddingGemma 2 | $0.0017 per million tokens | The cheapest embedding listed |
+| BGE reranker base | $0.003 per million tokens | Could re-rank Ask Sunny's shortlist without a model call |
+| IndicTrans2 (English to Tamil and other Indian languages), M2M100 | $0.342 / $0.342 | Translation, if Mole ever needs it |
+
+**What this adds:** at Mole's measured sizes, **Claude Haiku 5.5 is cheaper than Gemini 3.5 Flash-Lite on every
+job**, by three to five times, because Flash-Lite's output price is five times Haiku's. Two Cloudflare models
+(Llama 3.1 8B fast, Gemma 4 26B) are cheaper still, and Gemma SEA-LION is trained for Southeast Asian languages,
+Malay among them. The most any of them saves over Haiku is about 8 US cents per 1,000 calls, so the eval decides.
 
 **Keeping it true.** Re-run this register after every eval run that pins a model, and once a month from live
 calls (`ai_call_log`: tokens, time and outcome per job and model). A benchmark row is replaced by a live row as
