@@ -729,6 +729,9 @@ With one door, one bad deploy can stop every AI feature at once. So:
 
 ### 6.4 What it costs, repriced
 
+*Superseded on 19 Nov 2026 by §6.5, which is measured. The rates below were the gateway's; Google's prices have
+since risen, and these tokens were estimates.*
+
 Unit costs at the rates in `ai_proxy` (Flash $0.15 in / $0.60 out per million
 tokens, Flash-Lite $0.075 / $0.30, embeddings $0.02):
 
@@ -764,6 +767,69 @@ AI-46:
 
 `docs/CAPACITY_AND_COST.md` should be redone from this table.
 
+
+### 6.5 The cost register: every AI cost, measured where Mole has measured it (19 Nov 2026)
+
+Haziq, 19 Nov: *"make the list of all the AI related costing and use our own benchmark if available as the cost
+itself so that it's true"*. Each row is one AI job. **Tokens per call are Mole's own**, from `ai_call_log`: live
+calls where members used the feature, otherwise the eval runs of 19 Nov (benchmark). The cost is those tokens
+at the provider's list price. A row with no measurement says so, and its cost is a list price only.
+
+**List prices used** (per million tokens unless stated; checked 19 Nov 2026):
+
+| Provider · model | Input | Output | Source |
+|---|---|---|---|
+| Anthropic · Claude Haiku 5.5 | $0.10 | $0.50 | Anthropic's list (prompts under 100K tokens) |
+| Anthropic · Claude Sonnet 5.5 | $2.00 | $10.00 | Anthropic's list |
+| Anthropic · Claude Opus 5.5 | $4.00 | $20.00 | Anthropic's list |
+| Google · Gemini 3.5 Flash-Lite | $0.30 | $2.50 | Third-party listings quoting Google; **confirm on Google's page** (not reachable from the session) |
+| Google · Gemini 3.8 Flash | $0.75 | $3.75 | Google Cloud's page: introductory to 31 Dec 2026, then **$1.50 / $7.50** |
+| Google · Gemini 3.1 Flash-Lite | $0.25 | $1.50 | Google's Gemini 3 guide |
+| Google · gemini-embedding-001 | $0.15 | none | Google's launch post |
+| Google · Search grounding (Gemini 3) | 5,000 searches a month free, then $14 per 1,000 | | Google's pricing page |
+| Cloudflare · Whisper large v3 turbo | $0.00051 per audio minute (46.63 neurons a minute at $0.011 per 1,000) | | Cloudflare's model page; its pricing page rounds to $0.0005. 10,000 neurons a day are free, about 214 minutes |
+
+**The register:**
+
+| Job | Provider · model | Tokens per call (in / out) | Calls behind it | Cost per 1,000 calls | Typical / slowest | Status |
+|---|---|---|---|---|---|---|
+| Card scan (F1) | Claude Haiku 5.5 | 932 / 185 | 17 live | **$0.19** | 3.0 s / 3.2 s | Live, the first reader |
+| Card scan, when Haiku can't | Claude Opus 5.5 | 901 / 187 | 2 live | $7.34 | not enough | Live, rare |
+| Card scan, Google's reader | Gemini Flash (alias) | 1,121 / 114 | 2 live, 5 failed | $1.27 (from 1 Jan: $2.54) | not enough | Refused by Google's limit (B127) |
+| Ask Sunny about your people | Claude Haiku 5.5 | 1,256 / 137 | 88 benchmark | **$0.19** | 1.7 s / 2.2 s | Off. Failed its gate 19 Nov; prompt fixed, re-run due |
+| Ask Sunny about your people | Claude Sonnet 5.5 | 1,257 / 130 | 44 benchmark | $3.81 | 1.9 s / 2.8 s | Off. Failed its gate 19 Nov, by 2 cases |
+| Ask Sunny about your people: the question's embedding | gemini-embedding-001 | 6 / none | 1 live | $0.001 | 1.1 s | Off |
+| Visitor chat's AI answers | Gemini 3.5 Flash-Lite | 254 / 13 | 15 benchmark | **$0.11** | 5.4 s / 9.0 s, slowed by Google's limit | Waiting on a pin (B127) |
+| Facts from a file | Gemini 3.5 Flash-Lite | 187 / 64 | 8 benchmark | $0.22 | 7.0 s / 12.5 s, slowed | Waiting on a pin |
+| Page drafts from files | Gemini 3.5 Flash-Lite | 238 / 568 | 7 benchmark | $1.49 | 5.3 s / 9.6 s, slowed | Waiting on a pin |
+| Sunny's follow-up draft | Gemini 3.5 Flash-Lite | 544 / 47 | 7 benchmark | $0.28 | 5.5 s / 6.6 s, slowed | Off; Claude to be measured |
+| Ask Sunny chat (help) | Gemini Flash-Lite (alias) | 2,355 / 4 | 1 live | $0.72 | not enough | On; the FAQs are most of the input |
+| Meeting agenda (F7) | Gemini Flash (alias) | 54 / 40 | 1 live | $0.19 | not enough | Refused by Google's limit |
+| Embedding a contact (F8) | gemini-embedding-001 | 38 / none | 32 live | **$0.006** | 0.8 s / 1.0 s | Live |
+| Voice note written out | Cloudflare Whisper | per audio minute | none yet | $0.51 per 1,000 minutes | not measured | Keys added 19 Nov; first note due 11:53 UTC |
+| Sunny's summary on a request | Gemini (to be pinned) | not measured | none | list price only | not measured | Waiting on a pin |
+| Company news with web search (F5) | Gemini with Search grounding | not measured | none | tokens plus $14 per 1,000 searches after 5,000 free a month | not measured | Off until May 2027 |
+| Signals, scheduled (F4, F6) | Gemini Flash (alias) | not measured | none | list price only | not measured | Off |
+
+**What the register shows:**
+
+1. **Cheap jobs stay cheap.** At the measured sizes, a card scan, an Ask Sunny question on Haiku, a visitor
+   answer and a contact's embedding each cost under US$0.20 per 1,000 calls, a fiftieth of a cent or less each.
+   The input is small because the gateway sends a shortlist, not a whole book (§2.3).
+2. **The model choice moves cost 20 times.** Sonnet 5.5 costs 20 times Haiku 5.5 for the same question, at the
+   same speed. A model is pinned only after its eval passes (AI-48). Between two that pass, the register is how
+   the cheaper one is chosen.
+3. **Output is where Flash-Lite costs.** Page drafts write about 570 tokens, at $2.50 per million: $1.49 per
+   1,000, seven times a visitor answer.
+4. **Web search is the one expensive line.** It is still the AI-46 rule: weekly, under a budget, never daily.
+5. **The den's spend figures under-count Google.** The gateway's rates (`COST_RATES` in `ai_proxy`) still price
+   Flash-Lite at $0.075 / $0.30 and Flash at $0.15 / $0.60, four to eight times under the prices above.
+   Sonnet 5.5 had no rate at all until 19 Nov (it was costed as Gemini). Update the Google rates once Google's
+   page confirms them.
+
+**Keeping it true.** Re-run this register after every eval run that pins a model, and once a month from live
+calls (`ai_call_log`: tokens, time and outcome per job and model). A benchmark row is replaced by a live row as
+soon as members use the feature. A price is re-checked when it is used; Gemini 3.8 Flash's doubles on 1 Jan 2027.
 ---
 
 ## 7 · The memory model
